@@ -53,7 +53,22 @@ thodd
         typename type_t>
     struct has_push_back<type_t, 
         std::void_t<
-            decltype(std::declval<type_t>(). push_back (std::declval<typename type_t::value_type>()))>> : std::true_type {} ;
+            typename type_t::value_type, 
+            decltype(
+                std::declval<type_t>().push_back(
+                    std::declval<typename type_t::value_type>()))>> : std::true_type {} ;
+
+    template<
+        typename, 
+        typename = std::void_t<>>
+    struct is_iterable : std::false_type {} ;
+
+    template<typename type_t>
+    struct is_iterable<
+            type_t, 
+            std::void_t<
+                decltype(std::declval<type_t>().begin()), 
+                decltype(std::declval<type_t>().end())>> : std::true_type {} ;
 
     extern constexpr auto
     push_back = 
@@ -61,7 +76,11 @@ thodd
     {
         static_assert(
             has_push_back<std::decay_t<decltype(__container)>>::value, 
-            "must have push_back method") ;
+            "__container must have push_back method") ;
+
+        static_assert(
+            is_iterable<std::decay_t<decltype(__container)>>::value, 
+            "__container must be iterable") ;
 
         if constexpr (has_push_back<std::decay_t<decltype(__container)>>::value)
             return __container.push_back(static_cast<decltype(__item)&&>(__item)) ;

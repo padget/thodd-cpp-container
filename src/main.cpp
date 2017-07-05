@@ -4,6 +4,20 @@
 #include <thodd/container.hpp>
 #include <thodd/functional.hpp>
     
+template<
+    typename value_t>
+class myvector 
+{
+    public :
+    using value_type = value_t;
+
+    inline void push_back(value_type const&) {}
+
+    inline int* begin() { return nullptr ; }
+
+    inline int* end() { return nullptr ; }
+} ;
+
 int main() 
 {
     using namespace thodd ;
@@ -45,4 +59,8 @@ int main()
 
     ($linq << with(cref(__vec)) 
            << transfer(ref(__vec2))) () ;
+
+    ::myvector<int> __mvec;
+
+    ($linq << with(ref(__mvec)) << transfer(ref(__mvec))) () ;
 }
