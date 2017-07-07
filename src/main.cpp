@@ -60,6 +60,7 @@ int main()
             << foreach(cout_ << $0) 
             << where($0 % val(2) == val(1)) 
             << limit(val(3))) ();
+                
 
     
     std::cout << "\n" ;
@@ -67,12 +68,14 @@ int main()
     std::list<int> __vec2 ;
 
     ($cquel << with(cref(__vec)) 
-            << transfer(ref(__vec2))) () ;
+            << copy(ref(__vec2))) () ;
+
+    ($cquel << with(ref(__vec)) << foreach(cout_ << $0 << val(' '))) ();
 
     ::myvector<int> __mvec;
 
     ($cquel << with(ref(__mvec)) 
-           << transfer(ref(__mvec))) () ;
+            << copy(ref(__mvec))) () ;
 
     struct 
     person 
@@ -102,8 +105,15 @@ int main()
         {__tomap} } ;
 
     ($cquel << with(ref(__twodim)) 
-            << map([](auto&& __item) { return __item.data ; }, 
+            << map([](auto&& __item) { return __item.data[0].name ; }, 
                    [](auto&& __item) { return __item.name ; }) 
             << foreach(cout_ << $0 << val(' '))) () ;
+
+     std::vector<float> __tosum { 1 , 2 , 3 , 4 , 5 , 6 } ;
+     constexpr auto sumall = [](auto&& __container){auto sum = 0u ; for(auto&& __item : __container) sum += __item ; return sum ; } ;
+     auto sum = ($cquel << with(ref(__tosum)) << all(sumall)) ();
+     auto size = ($cquel << with(ref(__tosum)) << all([] (auto&& __container) {return __container.size() ;})) () ;
+     auto mean = ($cquel << with(ref(sum)) << all([&size] (auto&& __sum){return __sum / size;})) () ;
+     std::cout << "mean " << mean ;   
 
 }

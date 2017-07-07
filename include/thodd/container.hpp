@@ -17,8 +17,8 @@ thodd
         map,
         foreach, 
         where, 
-        sort, 
-        limit
+        limit, 
+        all
     } ;
 
 
@@ -49,7 +49,7 @@ thodd
 
 
     extern constexpr auto
-    transfer = 
+    copy = 
     [] (auto&& __target) 
     {
         return 
@@ -74,7 +74,7 @@ thodd
         as_node (
             std::integral_constant<
                 container, 
-                container::map>{}, 
+                container::map> {}, 
             [&] () 
             {
                 return
@@ -92,7 +92,7 @@ thodd
         as_node (
             std::integral_constant<
                 container, 
-                container::where>{},
+                container::where> {},
             static_cast<decltype(__algorithm)&&>(__algorithm)) ;
     } ;
 
@@ -105,8 +105,20 @@ thodd
         as_node(
             std::integral_constant<
                 container, 
-                container::limit>{},
+                container::limit> {},
             static_cast<decltype(__number)&&>(__number)) ;
+    } ;
+
+    extern constexpr auto
+    all = 
+    [] (auto&& __container_get)
+    {
+        return 
+        as_node(
+            std::integral_constant<
+                container, 
+                container::all> {}, 
+            static_cast<decltype(__container_get)&&>(__container_get)) ;
     } ;
 
 
@@ -123,15 +135,16 @@ thodd
 
     template <typename act_t>
     using where_node = cquel_node<container::where, act_t> ;
-    
-    template <typename act_t>
-    using sort_node = cquel_node<container::sort, act_t> ;
 
     template <typename act_t>
     using limit_node = cquel_node<container::limit, act_t> ;
 
     template <typename act_t>
     using map_node = cquel_node<container::map, act_t> ;
+
+    template <typename act_t>
+    using all_node = cquel_node<container::all, act_t> ;
+
 
     struct cquel 
     {
@@ -243,6 +256,26 @@ thodd
                 __foreach, 
                 where_node<decltype(val(true))> { val(true) }, 
                 limit_node<decltype(val(-1))> { val(-1) }) ;
+        }
+
+
+        constexpr auto 
+        get_interpretor(
+            with_node<auto> const& __with,
+            all_node<auto> const& __all) const
+        {
+           
+            return
+            [=] (auto && ... __params)
+            -> decltype(auto)
+            {
+                auto&& __container = __with.act(static_cast<decltype(__params)&&>(__params)...) ;
+                auto&& __algorithm = __all.act ;
+
+                return 
+                static_cast<decltype(__algorithm)&&>(__algorithm) (
+                    static_cast<decltype(__container)&&>(__container)) ;
+            } ;
         }
     } ;
 
