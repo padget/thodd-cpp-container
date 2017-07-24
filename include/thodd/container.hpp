@@ -78,7 +78,7 @@ thodd
             [&] () 
             {
                 return
-                std::make_tuple(
+                std::tuple(
                     static_cast<decltype(__mapper)&&>(__mapper)...) ; 
             }) ;
     } ;
@@ -177,7 +177,7 @@ thodd
             with_node<auto>    const& __with, 
             foreach_node<auto> const& __foreach) const
         {
-            constexpr auto map_node_default = [] { return std::make_tuple($0) ; } ;
+            constexpr auto map_node_default = [] { return std::tuple($0) ; } ;
            
             return 
             get_interpretor ( 
@@ -194,7 +194,7 @@ thodd
             foreach_node<auto> const& __foreach,
             limit_node<auto>   const& __limit) const
         {
-            constexpr auto map_node_default = [] { return std::make_tuple($0) ; } ;
+            constexpr auto map_node_default = [] { return std::tuple($0) ; } ;
 
             return 
             get_interpretor (
@@ -212,7 +212,7 @@ thodd
             foreach_node<auto> const& __foreach,
             where_node<auto>   const& __where) const
         {
-            constexpr auto map_node_default = [] { return std::make_tuple($0) ; } ;
+            constexpr auto map_node_default = [] { return std::tuple($0) ; } ;
 
             return 
             get_interpretor (
@@ -230,7 +230,7 @@ thodd
             where_node<auto> const& __where, 
             limit_node<auto> const& __limit) const
         {
-            constexpr auto map_node_default = [] { return std::make_tuple($0) ; } ;
+            constexpr auto map_node_default = [] { return std::tuple($0) ; } ;
 
             return 
             get_interpretor (
